@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+<title>InvoiceMate</title>
+{% endblock %}
+
+{% block content %}
+<div class="centered-content">
+  <h1>Welcome to InvoiceMate</h1>
+</div>
+{% if not user.is_authenticated %}
+  <section>
+    <form action="{% url 'home' %}" method="post" class="login">
+      <h1>Login</h1>
+      {% csrf_token %} {{ form.as_p }}
+      <input type="hidden" name="next" value="{{ next }}" />
+      <button type="submit" class="btn submit">Login</button>
+    </form>
+  </section>
+{% endif %}
+{% endblock %}

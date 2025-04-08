@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/base.css' %}">
+    <title>
+      InvoiceMate | {% block title %}{% endblock %}
+    </title>
+    {% block head %}{% endblock %}
+  </head>
+  <body>
+    <header>
+      <div class="header-logo-container">
+        <a href="{% url 'home' %}">
+          <img
+            src="{% static 'images/header-logo.svg' %}"
+            alt="InvoiceMate Logo"
+          />
+        </a>
+      </div>
+      <nav>
+        <ul>
+          {% if user.is_authenticated %}
+            <li><a href="{% url 'invoice-index' %}">Invoices</a></li>
+            <li><a href="{% url 'client-index' %}">Clients</a></li>
+            <li><a href="{% url 'invoice-create' %}">New Invoice</a></li>
+            <li><a href="{% url 'client-create' %}">New Client</a></li>
+            <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+            <li><a href="{% url 'about' %}">About</a></li>
+            <li>
+              <form id="logout-form" method="post" action="{% url 'logout' %}">
+                {% csrf_token %}
+                <button type="submit">Log out</button>
+              </form>
+            </li>
+          {% else %}
+            <li><a href="{% url 'about' %}">About</a></li>
+            <li><a href="{% url 'home' %}">Login</a></li>
+            <li><a href="{% url 'signup' %}">Sign Up</a></li>
+          {% endif %}
+        </ul>
+      </nav>
+    </header>
+    <main>
+      {% block content %}{% endblock %}
+    </main>
+    {% block scripts %}{% endblock %}
+  </body>
+</html>
