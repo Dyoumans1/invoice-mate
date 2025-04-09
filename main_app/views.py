@@ -69,3 +69,36 @@ class ClientList(LoginRequiredMixin, ListView):
     
     def get_queryset(self):
         return Client.objects.filter(user=self.request.user)
+    
+@login_required
+def invoice_index(request):
+    invoices = Invoice.objects.filter(user=request.user)
+    return render(request, 'invoices/index.html', {'invoices': invoices})
+
+@login_required
+def invoice_detail(request, invoice_id):
+    invoice = Invoice.objects.get(Invoice, id=invoice_id, user=request.user)
+    item_form = ItemForm()
+    return render(request, 'invoices/detail.html', {
+        'invoice': invoice, 
+        'item_form': item_form
+    })    
+    
+class InvoiceCreate(LoginRequiredMixin, CreateView):
+    model = Invoice
+    fields = ['client', 'invoice_number', 'issue_date', 'due_date', 'notes', 'subtotal', 'tax_rate']
+    
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        form.instance.tax_amount = form.instance.subtotal * (form.instance.tax_rate / 100)
+        form.instance.total_amount = form.instance.subtotal + form.instance.tax_amount
+        return super().form_valid(form)
+
+class InvoiceUpdate(LoginRequiredMixin, UpdateView):
+    model = Invoice
+    fields = ['client', 'invoice_number', 'issue_date', 'due_date', 'status', 'notes', 'tax_rate']
+
+class InvoiceDelete(LoginRequiredMixin, DeleteView):
+    model = Invoice
+    success_url = '/invoices/'
+
