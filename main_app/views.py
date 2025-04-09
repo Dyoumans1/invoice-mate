@@ -102,3 +102,54 @@ class InvoiceDelete(LoginRequiredMixin, DeleteView):
     model = Invoice
     success_url = '/invoices/'
 
+class ItemCreate(LoginRequiredMixin, CreateView):
+    model = Item
+    form_class = ItemForm
+    
+    def form_valid(self, form):
+        form.instance.invoice_id = self.kwargs.get('invoice_id')
+        form.instance.user = self.request.user
+        form.instance.total_price = form.instance.quantity * form.instance.unit_price
+        
+        response = super().form_valid(form)
+        
+        invoice = form.instance.invoice
+        invoice.subtotal += form.instance.total_price
+        invoice.tax_amount = invoice.subtotal * (invoice.tax_rate / 100)
+        invoice.total_amount = invoice.subtotal + invoice.tax_amount
+        invoice.save()
+        
+        return response
+    
+    def get_success_url(self):
+        return f'/invoices/{self.kwargs.get("invoice_id")}/'
+
+
+class ItemUpdate(LoginRequiredMixin, UpdateView):
+    model = Item
+    fields = ['description', 'quantity', 'unit_price']
+    
+    def form_valid(self, form):
+        original_total = self.object.total_price
+        form.instance.total_price = form.instance.quantity * form.instance.unit_price
+        
+        invoice = self.object.invoice
+        invoice.subtotal = invoice.subtotal - original_total + form.instance.total_price
+        invoice.tax_amount = invoice.subtotal * (invoice.tax_rate / 100)
+        invoice.total_amount = invoice.subtotal + invoice.tax_amount
+        invoice.save()
+        
+        return super().form_valid(form)
+
+class ItemDelete(LoginRequiredMixin, DeleteView):
+    model = Item
+    
+    def get_success_url(self):
+        invoice_id = self.object.invoice.id
+        
+        invoice = self.object.invoice
+        invoice.subtotal -= self.object.total_price
+        invoice.tax_amount = invoice.subtotal * (invoice.tax_rate / 100)
+        invoice.total_amount = invoice.subtotal + invoice.tax_amount
+        invoice.save()
+        return f'/invoices/{invoice_id}/'
