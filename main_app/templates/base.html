@@ -22,7 +22,7 @@
       </div>
       <nav>
         <ul>
-          {% comment %} {% if user.is_authenticated %}
+          {% if user.is_authenticated %}
             <li><a href="{% url 'invoice-index' %}">Invoices</a></li>
             <li><a href="{% url 'client-index' %}">Clients</a></li>
             <li><a href="{% url 'invoice-create' %}">New Invoice</a></li>
@@ -35,11 +35,11 @@
                 <button type="submit">Log out</button>
               </form>
             </li>
-          {% else %} {% endcomment %}
+          {% else %} 
             <li><a href="{% url 'about' %}">About</a></li>
             <li><a href="{% url 'home' %}">Login</a></li>
             <li><a href="{% url 'signup' %}">Sign Up</a></li>
-          {% comment %} {% endif %} {% endcomment %}
+           {% endif %} 
         </ul>
       </nav>
     </header>

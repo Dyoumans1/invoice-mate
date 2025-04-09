@@ -5,13 +5,11 @@ from django.views.generic import ListView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import login
-from .models import Client
+from django.contrib.auth.decorators import login_required
+from .models import Client, Invoice, Item
 from .forms import CustomUserCreationForm
+from .forms import ItemForm
 
-# Import HttpResponse to send text-based responses
-from django.http import HttpResponse
-
-# Define the home view function
 class Home(LoginView):
     template_name = 'home.html'
 
@@ -32,8 +30,11 @@ def signup(request):
 def about(request):
     return render(request, 'about.html')
 
+@login_required
 def dashboard(request):
-    return render(request, 'main_app/dashboard.html')
+    invoices = Invoice.objects.filter(user=request.user).order_by('-created_at')[:5]
+    clients = Client.objects.filter(user=request.user).order_by('-id')[:5]
+    return render(request, 'main_app/dashboard.html', {'invoices': invoices,'clients': clients })
 
 
 def client_index(request):
