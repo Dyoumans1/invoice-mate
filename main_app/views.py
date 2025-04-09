@@ -43,7 +43,7 @@ def client_index(request):
 
 
 def client_detail(request, client_id):
-    client = Client.objects.get(Client, id=client_id, user=request.user)
+    client = Client.objects.get(id=client_id, user=request.user)
     return render(request, 'clients/detail.html', {
         'client': client,
     })
@@ -51,6 +51,7 @@ def client_detail(request, client_id):
 class ClientCreate(LoginRequiredMixin, CreateView):
     model = Client
     fields = ['name', 'email', 'address', 'phone', 'notes']
+    template_name = 'clients/client_form.html'
     
     def form_valid(self, form):
         form.instance.user = self.request.user
@@ -59,10 +60,13 @@ class ClientCreate(LoginRequiredMixin, CreateView):
 class ClientUpdate(LoginRequiredMixin, UpdateView):
     model = Client
     fields = ['name', 'email', 'address', 'phone', 'notes']
+    template_name = 'clients/client_form.html'
 
 class ClientDelete(LoginRequiredMixin, DeleteView):
     model = Client
     success_url = '/clients/'
+    template_name = 'clients/client_confirm_delete.html'
+    
 
 class ClientList(LoginRequiredMixin, ListView):
     model = Client
@@ -77,7 +81,7 @@ def invoice_index(request):
 
 @login_required
 def invoice_detail(request, invoice_id):
-    invoice = Invoice.objects.get(Invoice, id=invoice_id, user=request.user)
+    invoice = Invoice.objects.get(id=invoice_id, user=request.user)
     item_form = ItemForm()
     return render(request, 'invoices/detail.html', {
         'invoice': invoice, 
