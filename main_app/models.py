@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
-
+from django.urls import reverse
 
 # Create your models here.
 class Client(models.Model):
@@ -14,6 +14,8 @@ class Client(models.Model):
     
     def __str__(self):
         return self.name
+    def get_absolute_url(self):
+        return reverse('client-detail', kwargs={'client_id': self.id})
     
 class Invoice(models.Model):
     STATUS_CHOICES = [
@@ -37,6 +39,8 @@ class Invoice(models.Model):
 
     def __str__(self):
         return f"Invoice {self.invoice_number} - {self.client.name}"
+    def get_absolute_url(self):
+        return reverse('invoice-detail', kwargs={'invoice_id': self.id})
 
 class Item(models.Model):
     invoice = models.ForeignKey(Invoice, on_delete=models.CASCADE, related_name='items')
@@ -49,3 +53,5 @@ class Item(models.Model):
     
     def __str__(self):
         return self.description
+    def get_absolute_url(self):
+        return reverse('invoice-detail', kwargs={'invoice_id': self.invoice.id})
