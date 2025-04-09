@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Clients{% endblock %}
+
+{% block content %}
+<div class="header">
+    <h1>Clients</h1>
+    <a href="{% url 'client-create' %}" class="button-primary">Add Client</a>
+</div>
+
+{% if clients %}
+<div class="client-grid">
+    {% for client in clients %}
+    <div class="client-card-container">
+        <div class="client-card">
+            <div class="card-body">
+                <h5 class="client-name">{{ client.name }}</h5>
+                <p class="client-info"><strong>Email:</strong> {{ client.email }}</p>
+                <p class="client-info"><strong>Phone:</strong> {{ client.phone }}</p>
+            </div>
+            <div class="card-footer">
+                <a href="{% url 'client-detail' client.id %}" class="button-info">Details</a>
+                <a href="{% url 'client-update' client.id %}" class="button-warning">Edit</a>
+                <a href="{% url 'client-delete' client.id %}" class="button-danger">Delete</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="alert-box">
+    <p>No clients yet. Start by adding a client!</p>
+</div>
+{% endif %}
+{% endblock %}
