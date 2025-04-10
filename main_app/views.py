@@ -70,6 +70,9 @@ class ClientList(ListView):
 
     def get_queryset(self):
         return Client.objects.filter(user=self.request.user)
+    
+
+# had help with formset.is_valid and calculations
 
 @login_required
 def invoice_index(request):
@@ -156,6 +159,7 @@ class InvoiceUpdate(UpdateView):
 class InvoiceDelete(DeleteView):
     model = Invoice
     success_url = '/invoices/'
+    template_name = 'invoices/invoice_confirm_delete.html'
 
 class ItemCreate(CreateView):
     model = Item

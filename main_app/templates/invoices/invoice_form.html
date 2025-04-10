@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="form-container">
+    <div class="form-box">
+      <div class="form-header">
+        <h2>{% if object %}Edit Invoice{% else %}Create Invoice{% endif %}</h2>
+      </div>
+      <div class="form-body">
+        <form method="post">
+          {% csrf_token %}
+          <div class="input-group">
+            <label for="{{ form.client.id_for_label }}" class="input-label">Client</label>
+            {{ form.client }}
+          </div>
+          <div class="input-group">
+            <label for="{{ form.invoice_number.id_for_label }}" class="input-label">Invoice Number</label>
+            {{ form.invoice_number }}
+          </div>
+          <div class="input-row">
+            <div class="input-half">
+              <label for="{{ form.issue_date.id_for_label }}" class="input-label">Issue Date</label>
+              {{ form.issue_date }}
+            </div>
+            <div class="input-half">
+              <label for="{{ form.due_date.id_for_label }}" class="input-label">Due Date</label>
+              {{ form.due_date }}
+            </div>
+          </div>
+          {% if object %}
+          <div class="input-group">
+            <label for="{{ form.status.id_for_label }}" class="input-label">Status</label>
+            {{ form.status }}
+          </div>
+          {% endif %}
+          
+          <div class="items-section">
+            <h3>Items</h3>
+            {{ item_formset.management_form }}
+            <table class="items-table">
+              <thead>
+                <tr>
+                  <th>Description</th>
+                  <th>Quantity</th>
+                  <th>Unit Price</th>
+                  {% if object %}
+                  <th>Delete</th>
+                  {% endif %}
+                </tr>
+              </thead>
+              <tbody id="items-tbody">
+                {% for item_form in item_formset %}
+                <tr class="item-form">
+                  <td>
+                    {{ item_form.id }}
+                    <div class="input-group">
+                      {{ item_form.description }}
+                      {{ item_form.description.errors }}
+                    </div>
+                  </td>
+                  <td>
+                    <div class="input-group">
+                      {{ item_form.quantity }}
+                      {{ item_form.quantity.errors }}
+                    </div>
+                  </td>
+                  <td>
+                    <div class="input-group">
+                      {{ item_form.unit_price }}
+                      {{ item_form.unit_price.errors }}
+                    </div>
+                  </td>
+                  {% if object %}
+                  <td>
+                    <div class="input-group">
+                      {{ item_form.DELETE }}
+                    </div>
+                  </td>
+                  {% endif %}
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            <button type="button" id="add-more-items" class="button-primary">Add Another Item</button>
+          </div>
+          
+          <div class="input-group">
+            <label for="{{ form.tax_rate.id_for_label }}" class="input-label">Tax Rate (%)</label>
+            {{ form.tax_rate }}
+          </div>
+          <div class="input-group">
+            <label for="{{ form.notes.id_for_label }}" class="input-label">Notes</label>
+            {{ form.notes }}
+          </div>
+          <div class="button-group">
+            <button type="submit" class="button-success">Save</button>
+            <a href="{% url 'invoice-index' %}" class="button-secondary">Cancel</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    //this is not 100% my code. I had help from out sourced resources.
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+    const addButton = document.getElementById('add-more-items');
+    const itemsContainer = document.getElementById('items-tbody');
+    const totalForms = document.getElementById('id_items-TOTAL_FORMS');
+
+    console.log('Loaded: addButton', addButton);
+    console.log('Loaded: itemsContainer', itemsContainer);
+    console.log('Loaded: totalForms', totalForms);
+
+    if (!addButton || !itemsContainer || !totalForms) {
+        console.error('Missing key elements. Script halted.');
+        return;
+    }
+
+    addButton.addEventListener('click', function() {
+        const formCount = parseInt(totalForms.value);
+        const lastForm = itemsContainer.querySelector('.item-form:last-child');
+
+        if (!lastForm) {
+            console.error('No existing form found to clone.');
+            return;
+        }
+
+        const newForm = lastForm.cloneNode(true);
+        const inputs = newForm.querySelectorAll('input, select, textarea');
+
+        inputs.forEach(input => {
+            const oldName = input.name;
+            const oldId = input.id;
+
+            if (oldName) {
+                const newName = oldName.replace(/item_set-(\d+)/, `item_set-${formCount}`);
+                input.name = newName;
+            }
+
+            if (oldId) {
+                const newId = oldId.replace(/id_item_set-(\d+)/, `id_item_set-${formCount}`);
+                input.id = newId;
+            }
+
+            if (input.type !== 'hidden' && input.type !== 'checkbox') {
+                input.value = '';
+            }
+        });
+
+        itemsContainer.appendChild(newForm);
+        totalForms.value = formCount + 1;
+
+        console.log('New form added. Total now:', totalForms.value);
+    });
+});
+</script>
+{% endblock %}
