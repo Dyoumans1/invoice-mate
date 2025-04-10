@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from .models import Client, Invoice, Item
 from .forms import CustomUserCreationForm
 from .forms import ItemForm
+from django.forms import inlineformset_factory
 
 class Home(LoginView):
     template_name = 'home.html'
@@ -41,14 +42,11 @@ def client_index(request):
     clients = Client.objects.filter(user=request.user)
     return render(request, 'clients/index.html', {'clients': clients})
 
-
 def client_detail(request, client_id):
     client = Client.objects.get(id=client_id, user=request.user)
-    return render(request, 'clients/detail.html', {
-        'client': client,
-    })
+    return render(request, 'clients/detail.html', {'client': client})
 
-class ClientCreate(LoginRequiredMixin, CreateView):
+class ClientCreate(CreateView):
     model = Client
     fields = ['name', 'email', 'address', 'phone', 'notes']
     template_name = 'clients/client_form.html'
@@ -57,23 +55,22 @@ class ClientCreate(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
-class ClientUpdate(LoginRequiredMixin, UpdateView):
+class ClientUpdate(UpdateView):
     model = Client
     fields = ['name', 'email', 'address', 'phone', 'notes']
     template_name = 'clients/client_form.html'
 
-class ClientDelete(LoginRequiredMixin, DeleteView):
+class ClientDelete(DeleteView):
     model = Client
     success_url = '/clients/'
     template_name = 'clients/client_confirm_delete.html'
-    
 
-class ClientList(LoginRequiredMixin, ListView):
+class ClientList(ListView):
     model = Client
-    
+
     def get_queryset(self):
         return Client.objects.filter(user=self.request.user)
-    
+
 @login_required
 def invoice_index(request):
     invoices = Invoice.objects.filter(user=request.user)
@@ -83,30 +80,84 @@ def invoice_index(request):
 def invoice_detail(request, invoice_id):
     invoice = Invoice.objects.get(id=invoice_id, user=request.user)
     item_form = ItemForm()
-    return render(request, 'invoices/detail.html', {
-        'invoice': invoice, 
-        'item_form': item_form
-    })    
-    
-class InvoiceCreate(LoginRequiredMixin, CreateView):
+    return render(request, 'invoices/detail.html', {'invoice': invoice, 'item_form': item_form})
+
+class InvoiceCreate(CreateView):
     model = Invoice
-    fields = ['client', 'invoice_number', 'issue_date', 'due_date', 'notes', 'subtotal', 'tax_rate']
+    fields = ['client', 'invoice_number', 'issue_date', 'due_date', 'notes', 'tax_rate']
+    template_name = 'invoices/invoice_form.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        ItemFormSet = inlineformset_factory(Invoice, Item, fields=('description', 'quantity', 'unit_price'), extra=1)
+        context['item_formset'] = ItemFormSet(self.request.POST or None, instance=self.object)
+        return context
     
     def form_valid(self, form):
         form.instance.user = self.request.user
-        form.instance.tax_amount = form.instance.subtotal * (form.instance.tax_rate / 100)
-        form.instance.total_amount = form.instance.subtotal + form.instance.tax_amount
-        return super().form_valid(form)
+        form.instance.subtotal = 0
+        response = super().form_valid(form)
+        
+        ItemFormSet = inlineformset_factory(Invoice, Item, fields=('description', 'quantity', 'unit_price'), extra=1)
+        formset = ItemFormSet(self.request.POST, instance=self.object)
+        
+        if formset.is_valid():
+            subtotal = 0
+            for item in formset.save(commit=False):
+                item.user = self.request.user
+                item.total_price = item.quantity * item.unit_price
+                item.save()
+                subtotal += item.total_price
+            
+            self.object.subtotal = subtotal
+            self.object.tax_amount = subtotal * (self.object.tax_rate / 100)
+            self.object.total_amount = self.object.subtotal + self.object.tax_amount
+            self.object.save()
+        
+        return response
 
-class InvoiceUpdate(LoginRequiredMixin, UpdateView):
+class InvoiceUpdate(UpdateView):
     model = Invoice
     fields = ['client', 'invoice_number', 'issue_date', 'due_date', 'status', 'notes', 'tax_rate']
+    template_name = 'invoices/invoice_form.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        ItemFormSet = inlineformset_factory(Invoice, Item, fields=('description', 'quantity', 'unit_price'), extra=1)
+        context['item_formset'] = ItemFormSet(self.request.POST or None, instance=self.object)
+        return context
+    
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        response = super().form_valid(form)
+        
+        ItemFormSet = inlineformset_factory(Invoice, Item, fields=('description', 'quantity', 'unit_price'), extra=1)
+        formset = ItemFormSet(self.request.POST, instance=self.object)
+        
+        if formset.is_valid():
+            subtotal = 0
+            for obj in formset.deleted_objects:
+                obj.delete()
+            for item in formset.save(commit=False):
+                item.user = self.request.user
+                item.total_price = item.quantity * item.unit_price
+                item.save()
+            
+            for item in self.object.item_set.all():
+                subtotal += item.total_price
+            
+            self.object.subtotal = subtotal
+            self.object.tax_amount = subtotal * (self.object.tax_rate / 100)
+            self.object.total_amount = self.object.subtotal + self.object.tax_amount
+            self.object.save()
+        
+        return response
 
-class InvoiceDelete(LoginRequiredMixin, DeleteView):
+class InvoiceDelete(DeleteView):
     model = Invoice
     success_url = '/invoices/'
 
-class ItemCreate(LoginRequiredMixin, CreateView):
+class ItemCreate(CreateView):
     model = Item
     form_class = ItemForm
     
@@ -128,8 +179,7 @@ class ItemCreate(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         return f'/invoices/{self.kwargs.get("invoice_id")}/'
 
-
-class ItemUpdate(LoginRequiredMixin, UpdateView):
+class ItemUpdate(UpdateView):
     model = Item
     fields = ['description', 'quantity', 'unit_price']
     
@@ -145,7 +195,7 @@ class ItemUpdate(LoginRequiredMixin, UpdateView):
         
         return super().form_valid(form)
 
-class ItemDelete(LoginRequiredMixin, DeleteView):
+class ItemDelete(DeleteView):
     model = Item
     
     def get_success_url(self):
@@ -156,4 +206,5 @@ class ItemDelete(LoginRequiredMixin, DeleteView):
         invoice.tax_amount = invoice.subtotal * (invoice.tax_rate / 100)
         invoice.total_amount = invoice.subtotal + invoice.tax_amount
         invoice.save()
+        
         return f'/invoices/{invoice_id}/'

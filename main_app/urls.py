@@ -1,5 +1,5 @@
 from django.urls import path
-from . import views # Import views to connect routes to view functions
+from . import views 
 
 urlpatterns = [
     path('', views.Home.as_view(), name='home'),
@@ -20,7 +20,7 @@ urlpatterns = [
     path('invoices/<int:pk>/update/', views.InvoiceUpdate.as_view(), name='invoice-update'),
     path('invoices/<int:pk>/delete/', views.InvoiceDelete.as_view(), name='invoice-delete'),
 
-    path('items/create/<int:invoice_id>/', views.ItemCreate.as_view(), name='item-create'),
+    path('invoices/<int:invoice_id>/items/create/', views.ItemCreate.as_view(), name='item-create'),
     path('items/<int:pk>/update/', views.ItemUpdate.as_view(), name='item-update'),
     path('items/<int:pk>/delete/', views.ItemDelete.as_view(), name='item-delete'),
 ]
