@@ -1,0 +1,136 @@
+{% extends 'base.html' %}
+
+{% block title %}Invoice {{ invoice.invoice_number }}{% endblock %}
+
+{% block content %}
+<div class="topbar">
+  <h1>Invoice {{ invoice.invoice_number }}</h1>
+  <div class="actions">
+    <a href="#" class="btn blue">Download</a>
+    <a href="{% url 'invoice-update' invoice.id %}" class="btn orange">Edit</a>
+    <a href="{% url 'invoice-delete' invoice.id %}" class="btn red">Delete</a>
+  </div>
+</div>
+
+<div class="grid">
+  <div class="half">
+    <div class="box">
+      <div class="box-head">
+        <h2>Client</h2>
+      </div>
+      <div class="box-body">
+        <p><strong>{{ invoice.client.name }}</strong></p>
+        <p>{{ invoice.client.email }}</p>
+        <p>{{ invoice.client.phone }}</p>
+        <p>{{ invoice.client.address|linebreaks }}</p>
+      </div>
+    </div>
+  </div>
+  <div class="half">
+    <div class="box">
+      <div class="box-head">
+        <h2>Details</h2>
+      </div>
+      <div class="box-body">
+        <p><strong>Status:</strong> {{ invoice.get_status_display }}</p>
+        <p><strong>Issued:</strong> {{ invoice.issue_date }}</p>
+        <p><strong>Due:</strong> {{ invoice.due_date }}</p>
+        <p><strong>Tax:</strong> {{ invoice.tax_rate }}%</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="box">
+  <div class="box-head between">
+    <h2>Items</h2>
+    <a href="{% url 'item-create' invoice.id %}" class="btn dark">Add Item</a>
+  </div>
+  <div class="box-body">
+    {% if invoice.item_set.all %}
+    <div class="table-box">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Qty</th>
+            <th>Price</th>
+            <th>Total</th>
+            <th>Options</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in invoice.item_set.all %}
+          <tr>
+            <td>{{ item.description }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>${{ item.unit_price }}</td>
+            <td>${{ item.total_price }}</td>
+            <td>
+              <a href="{% url 'item-update' item.id %}" class="btn orange small">Edit</a>
+              <a href="{% url 'item-delete' item.id %}" class="btn red small">Delete</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <p>No items yet.</p>
+    {% endif %}
+  </div>
+  <div class="box-foot right">
+    <table class="table clean">
+      <tr>
+        <th>Subtotal</th>
+        <td>${{ invoice.subtotal }}</td>
+      </tr>
+      <tr>
+        <th>Tax</th>
+        <td>${{ invoice.tax_amount }}</td>
+      </tr>
+      <tr>
+        <th>Total</th>
+        <td>${{ invoice.total_amount }}</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+{% if invoice.notes %}
+<div class="box">
+  <div class="box-head">
+    <h2>Notes</h2>
+  </div>
+  <div class="box-body">
+    <p>{{ invoice.notes|linebreaks }}</p>
+  </div>
+</div>
+{% endif %}
+
+<div class="box space-top">
+  <div class="box-head">
+    <h2>New Item</h2>
+  </div>
+  <div class="box-body">
+    <form method="post" action="{% url 'item-create' invoice.id %}">
+      {% csrf_token %}
+      <div class="grid">
+        <div class="third">
+          <label for="{{ item_form.description.id_for_label }}">Item</label>
+          {{ item_form.description }}
+        </div>
+        <div class="third">
+          <label for="{{ item_form.quantity.id_for_label }}">Qty</label>
+          {{ item_form.quantity }}
+        </div>
+        <div class="third">
+          <label for="{{ item_form.unit_price.id_for_label }}">Price</label>
+          {{ item_form.unit_price }}
+        </div>
+      </div>
+      <button type="submit" class="btn green">Add</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
