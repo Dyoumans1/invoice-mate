@@ -47,7 +47,7 @@
     <a href="{% url 'item-create' invoice.id %}" class="btn dark">Add Item</a>
   </div>
   <div class="box-body">
-    {% if invoice.item_set.all %}
+    {% if invoice.items.all %}
     <div class="table-box">
       <table class="table">
         <thead>
@@ -60,7 +60,7 @@
           </tr>
         </thead>
         <tbody>
-          {% for item in invoice.item_set.all %}
+          {% for item in invoice.items.all %}
           <tr>
             <td>{{ item.description }}</td>
             <td>{{ item.quantity }}</td>

@@ -137,17 +137,17 @@
         inputs.forEach(input => {
             const oldName = input.name;
             const oldId = input.id;
-
+        
             if (oldName) {
-                const newName = oldName.replace(/item_set-(\d+)/, `item_set-${formCount}`);
+                const newName = oldName.replace(/items-(\d+)/, `items-${formCount}`);
                 input.name = newName;
             }
-
+        
             if (oldId) {
-                const newId = oldId.replace(/id_item_set-(\d+)/, `id_item_set-${formCount}`);
+                const newId = oldId.replace(/id_items-(\d+)/, `id_items-${formCount}`);
                 input.id = newId;
             }
-
+        
             if (input.type !== 'hidden' && input.type !== 'checkbox') {
                 input.value = '';
             }
@@ -157,6 +157,62 @@
         totalForms.value = formCount + 1;
 
         console.log('New form added. Total now:', totalForms.value);
+
+        function calculateTotals() {
+            let subtotal = 0;
+            const rows = document.querySelectorAll('.item-form');
+            
+            rows.forEach(row => {
+                const quantityInput = row.querySelector('input[name$="-quantity"]');
+                const priceInput = row.querySelector('input[name$="-unit_price"]');
+                
+                if (quantityInput && priceInput && 
+                    quantityInput.value && priceInput.value) {
+                    const quantity = parseFloat(quantityInput.value) || 0;
+                    const price = parseFloat(priceInput.value) || 0;
+                    const itemTotal = quantity * price;
+                    subtotal += itemTotal;
+                }
+            });
+
+            const taxRateInput = document.querySelector('input[name="tax_rate"]');
+            const taxRate = parseFloat(taxRateInput.value) || 0;
+            
+            const taxAmount = subtotal * (taxRate / 100);
+            const totalAmount = subtotal + taxAmount;
+
+            const summaryTable = document.createElement('div');
+            summaryTable.className = 'summary-table';
+            summaryTable.innerHTML = `
+                <table class="items-summary">
+                    <tr><th>Subtotal:</th><td>$${subtotal.toFixed(2)}</td></tr>
+                    <tr><th>Tax (${taxRate}%):</th><td>$${taxAmount.toFixed(2)}</td></tr>
+                    <tr><th>Total:</th><td>$${totalAmount.toFixed(2)}</td></tr>
+                </table>
+            `;
+
+            const existingSummary = document.querySelector('.summary-table');
+            if (existingSummary) {
+                existingSummary.remove();
+            }
+
+            const itemsSection = document.querySelector('.items-section');
+            itemsSection.appendChild(summaryTable);
+        }
+
+        function addCalculationListeners() {
+            const inputs = document.querySelectorAll('input[name$="-quantity"], input[name$="-unit_price"], input[name="tax_rate"]');
+            inputs.forEach(input => {
+                input.addEventListener('input', calculateTotals);
+            });
+        }
+        
+        addCalculationListeners();
+        addButton.addEventListener('click', function() {
+            setTimeout(addCalculationListeners, 100);
+        });
+    
+        calculateTotals();
     });
 });
 </script>

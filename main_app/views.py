@@ -92,8 +92,12 @@ class InvoiceCreate(CreateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        ItemFormSet = inlineformset_factory(Invoice, Item, fields=('description', 'quantity', 'unit_price'), extra=1)
-        context['item_formset'] = ItemFormSet(self.request.POST or None, instance=self.object)
+        ItemFormSet = inlineformset_factory(Invoice, Item, fields=('description', 'quantity', 'unit_price'), extra=1, can_delete=False)
+        
+        if self.request.POST:
+            context['item_formset'] = ItemFormSet(self.request.POST, instance=self.object)
+        else:
+            context['item_formset'] = ItemFormSet(instance=self.object)
         return context
     
     def form_valid(self, form):
@@ -133,27 +137,35 @@ class InvoiceUpdate(UpdateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         response = super().form_valid(form)
-        
-        ItemFormSet = inlineformset_factory(Invoice, Item, fields=('description', 'quantity', 'unit_price'), extra=1)
+
+        ItemFormSet = inlineformset_factory(Invoice, Item, 
+                                            fields=('description', 'quantity', 'unit_price'), 
+                                            extra=1,
+                                            can_delete=True)
         formset = ItemFormSet(self.request.POST, instance=self.object)
-        
+
         if formset.is_valid():
             subtotal = 0
-            for obj in formset.deleted_objects:
-                obj.delete()
-            for item in formset.save(commit=False):
-                item.user = self.request.user
-                item.total_price = item.quantity * item.unit_price
-                item.save()
             
-            for item in self.object.item_set.all():
-                subtotal += item.total_price
+            for item_form in formset.forms:
+                if not item_form.cleaned_data:
+                    continue
+                    
+                if item_form.cleaned_data.get('DELETE', False):
+                    if item_form.instance.pk:
+                        item_form.instance.delete()
+                else:
+                    item = item_form.save(commit=False)
+                    item.user = self.request.user
+                    item.total_price = item.quantity * item.unit_price
+                    item.save()
+                    subtotal += item.total_price
             
             self.object.subtotal = subtotal
             self.object.tax_amount = subtotal * (self.object.tax_rate / 100)
             self.object.total_amount = self.object.subtotal + self.object.tax_amount
             self.object.save()
-        
+
         return response
 
 class InvoiceDelete(DeleteView):
