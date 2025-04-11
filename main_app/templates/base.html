@@ -12,14 +12,15 @@
   </head>
   <body>
     <header>
-      <div class="header-logo-container">
-        <a href="{% url 'home' %}">
-          <img
-            src="{% static 'images/header-logo.svg' %}"
-            alt="InvoiceMaid Logo"
-          />
-        </a>
-      </div>
+        <div class="header-logo-container">
+            <a href="{% url 'home' %}" class="logo-title-link">
+              <img
+                src="{% static 'images/invoicemaid-logo.png' %}"
+                alt="InvoiceMaid Logo"
+              />
+              <span class="app-title">InvoiceMaid</span>
+            </a>
+          </div>
       <nav>
         <ul>
           {% if user.is_authenticated %}
