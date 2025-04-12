@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}{% if object %}Edit Client{% else %}Add Client{% endif %}{% endblock %}
+
+{% block head %}
+  <link rel="stylesheet" href="{% static 'css/forms.css' %}" />
+{% endblock %} 
 
 {% block content %}
 <div class="form-container">

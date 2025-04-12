@@ -1,6 +1,12 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block title %}Invoice form{% endblock %}
+
+{% block head %}
+  <link rel="stylesheet" href="{% static 'css/forms.css' %}" />
+{% endblock %} 
+
 {% block content %}
 <div class="form-container">
     <div class="form-box">
