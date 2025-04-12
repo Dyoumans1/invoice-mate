@@ -1,0 +1,67 @@
+.d-flex {
+    display: flex;
+  }
+  
+  .justify-content-between {
+    justify-content: space-between;
+  }
+  
+  .align-items-center {
+    align-items: center;
+  }
+  
+  .mb-4 {
+    margin-bottom: 1.5rem;
+  }
+  
+  .table-responsive {
+    overflow-x: auto;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+  }
+  
+  .table-striped tbody tr:nth-of-type(odd) {
+    background-color: #f8fafc;
+  }
+  
+  .table-striped tbody tr:hover {
+    background-color: #f1f5f9;
+  }
+  
+  .btn-sm {
+    padding: 0.35rem 0.8rem;
+    font-size: 0.85rem;
+    border-radius: 4px;
+    margin: 0 0.25rem;
+  }
+  
+  .alert-info {
+    background-color: #e0f2fe;
+    border-left: 4px solid #0ea5e9;
+    padding: 1.25rem;
+    color: #0369a1;
+    border-radius: 0 8px 8px 0;
+    margin: 1.5rem 0;
+  }
+  
+  td:nth-child(5) {
+    font-weight: 500;
+  }
+  
+  tr:has(td:contains("Paid")) td:nth-child(5) {
+    color: #10b981;
+  }
+  
+  tr:has(td:contains("Pending")) td:nth-child(5) {
+    color: #f59e0b;
+  }
+  
+  tr:has(td:contains("Overdue")) td:nth-child(5) {
+    color: #ef4444;
+  }
+  
+  tr:has(td:contains("Draft")) td:nth-child(5) {
+    color: #64748b;
+  }

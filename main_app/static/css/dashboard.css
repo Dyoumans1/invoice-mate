@@ -1,0 +1,83 @@
+.dashboard-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+  }
+  
+  .half-column {
+    flex: 1 1 calc(50% - 1rem);
+    min-width: 300px;
+  }
+  
+  .card-item {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  
+  .card-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  }
+  
+  .card-header {
+    background-color: #f8fafc;
+    padding: 1.25rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .card-title {
+    margin: 0;
+    color: #1e293b;
+    font-weight: 600;
+  }
+  
+  .card-body {
+    padding: 1.25rem;
+  }
+  
+  .mb-4 {
+    margin-bottom: 1.5rem;
+  }
+  
+  .outline-button {
+    background-color: transparent;
+    border: 2px solid #6366f1;
+    color: #6366f1;
+    padding: 0.35rem 0.8rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: all 0.3s;
+    font-weight: 500;
+  }
+  
+  .outline-button:hover {
+    background-color: #6366f1;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(99, 102, 241, 0.2);
+  }
+  
+  .invoice-list, .client-list {
+    list-style: none;
+  }
+  
+  .invoice-item, .client-item {
+    padding: 0.85rem 0;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background-color 0.2s;
+  }
+  
+  .invoice-item:hover, .client-item:hover {
+    background-color: #f8fafc;
+  }
+  
+  .invoice-item:last-child, .client-item:last-child {
+    border-bottom: none;
+  }

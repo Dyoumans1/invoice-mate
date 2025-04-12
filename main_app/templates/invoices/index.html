@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Invoices{% endblock %}
+
+{% block head %}
+  <link rel="stylesheet" href="{% static 'css/invoice-index.css' %}" />
+{% endblock %} 
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">

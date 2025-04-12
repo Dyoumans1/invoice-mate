@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}{{ client.name }}{% endblock %}
+
+{% block head %}
+  <link rel="stylesheet" href="{% static 'css/client-detail.css' %}" />
+{% endblock %} 
 
 {% block content %}
 <div class="client-detail-header">

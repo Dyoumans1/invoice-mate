@@ -1,6 +1,11 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Invoice {{ invoice.invoice_number }}{% endblock %}
+
+{% block head %}
+  <link rel="stylesheet" href="{% static 'css/invoice-detail.css' %}" />
+{% endblock %} 
 
 {% block content %}
 <div class="topbar">

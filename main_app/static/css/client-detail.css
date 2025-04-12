@@ -1,0 +1,74 @@
+.client-detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    background-color: #fff;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  }
+  
+  .client-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  .info-card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  
+  .info-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  }
+  
+  .card-header {
+    background-color: #f8fafc;
+    padding: 1.25rem;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .card-header h5 {
+    margin: 0;
+    color: #1e293b;
+    font-weight: 600;
+    font-size: 1.15rem;
+  }
+  
+  .card-body {
+    padding: 1.5rem;
+  }
+  
+  .card-body p {
+    margin-bottom: 0.75rem;
+    color: #64748b;
+  }
+  
+  .card-body p strong {
+    color: #475569;
+  }
+  
+  .invoice-section {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    margin-top: 2rem;
+  }
+  
+  .table-responsive {
+    overflow-x: auto;
+  }
+  
+  .btn-small {
+    padding: 0.35rem 0.8rem;
+    font-size: 0.85rem;
+    border-radius: 4px;
+  }

@@ -1,8 +1,18 @@
 {% extends 'base.html' %} 
+{% load static %}
+
+{% block title %}Sign Up{% endblock %}
+
+{% block head %}
+  <link rel="stylesheet" href="{% static 'css/about.css' %}" />
+{% endblock %} 
+
 {% block content %}
-<h1>About InvoiceMaid</h1>
-<hr />
-<p class="page-content">
-  A Place where you can make and keep track of all your invoices.
-</p>
+    <h1 class="page-title">About InvoiceMaid</h1>
+    <hr />
+        <p class="page-content">
+        A Place where you can make and keep track of all your invoices.
+        </p>
+    <h2 class="Bio">About the creator </h2>
+        <p class="bio-info">thats me</P>
 {% endblock %}
