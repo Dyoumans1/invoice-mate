@@ -1,81 +1,87 @@
-{% extends 'base.html' %}
-{% load static %}
-
-{% block title %}{{ client.name }}{% endblock %}
-
+{% extends 'base.html' %} 
+{% load static %} 
+{% block title %}{{ client.name }}{%endblock %} 
 {% block head %}
-  <link rel="stylesheet" href="{% static 'css/client-detail.css' %}" />
-{% endblock %} 
-
-{% block content %}
+<link rel="stylesheet" href="{% static 'css/client-detail.css' %}" />
+{% endblock %} {% block content %}
 <div class="client-detail-header">
-    <h1>{{ client.name }}</h1>
-    <div>
-        <a href="{% url 'client-update' client.id %}" class="button-warning">Edit</a>
-        <a href="{% url 'client-delete' client.id %}" class="button-danger">Delete</a>
-    </div>
+  <h1>{{ client.name }}</h1>
+  <div>
+    <a href="{% url 'client-update' client.id %}" class="button-warning"
+      >Edit</a
+    >
+    <a href="{% url 'client-delete' client.id %}" class="button-danger"
+      >Delete</a
+    >
+  </div>
 </div>
 
 <div class="client-info-grid">
-    <div class="info-card">
-        <div class="card-header">
-            <h5>Contact Information</h5>
-        </div>
-        <div class="card-body">
-            <p><strong>Email:</strong> {{ client.email }}</p>
-            <p><strong>Phone:</strong> {{ client.phone }}</p>
-            <p><strong>Address:</strong><br>{{ client.address }}</p>
-        </div>
+  <div class="info-card">
+    <div class="card-header">
+      <h5>Contact Information</h5>
     </div>
-    
-    <div class="info-card">
-        <div class="card-header">
-            <h5>Notes</h5>
-        </div>
-        <div class="card-body">
-            <p>{{ client.notes|linebreaks }}</p>
-        </div>
+    <div class="card-body">
+      <p><strong>Email:</strong> {{ client.email }}</p>
+      <p><strong>Phone:</strong> {{ client.phone }}</p>
+      <p><strong>Address:</strong><br />{{ client.address }}</p>
     </div>
+  </div>
+
+  <div class="info-card">
+    <div class="card-header">
+      <h5>Notes</h5>
+    </div>
+    <div class="card-body">
+      <p>{{ client.notes|linebreaks }}</p>
+    </div>
+  </div>
 </div>
 
 <div class="invoice-section">
-    <div class="card-header flex-between">
-        <h5>Invoices</h5>
-        <a href="{% url 'invoice-create' %}" class="button-primary btn-small">Create Invoice</a>
+  <div class="card-header flex-between">
+    <h5>Invoices</h5>
+    <a href="{% url 'invoice-create' %}" class="button-primary btn-small"
+      >Create Invoice</a
+    >
+  </div>
+  <div class="card-body">
+    {% if client.invoices.all %}
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Invoice #</th>
+            <th>Issue Date</th>
+            <th>Due Date</th>
+            <th>Status</th>
+            <th>Amount</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for invoice in client.invoices.all %}
+          <tr>
+            <td>{{ invoice.invoice_number }}</td>
+            <td>{{ invoice.issue_date }}</td>
+            <td>{{ invoice.due_date }}</td>
+            <td>{{ invoice.get_status_display }}</td>
+            <td>${{ invoice.total_amount }}</td>
+            <td>
+              <a
+                href="{% url 'invoice-detail' invoice.id %}"
+                class="button-info btn-small"
+                >View</a
+              >
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
     </div>
-    <div class="card-body">
-        {% if client.invoice_set.all %}
-        <div class="table-responsive">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Invoice #</th>
-                        <th>Issue Date</th>
-                        <th>Due Date</th>
-                        <th>Status</th>
-                        <th>Amount</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for invoice in client.invoice_set.all %}
-                    <tr>
-                        <td>{{ invoice.invoice_number }}</td>
-                        <td>{{ invoice.issue_date }}</td>
-                        <td>{{ invoice.due_date }}</td>
-                        <td>{{ invoice.get_status_display }}</td>
-                        <td>${{ invoice.total_amount }}</td>
-                        <td>
-                            <a href="{% url 'invoice-detail' invoice.id %}" class="button-info btn-small">View</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        {% else %}
-        <p>No invoices yet for this client.</p>
-        {% endif %}
-    </div>
+    {% else %}
+    <p>No invoices yet for this client.</p>
+    {% endif %}
+  </div>
 </div>
 {% endblock %}

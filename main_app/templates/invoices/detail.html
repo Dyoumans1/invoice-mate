@@ -1,13 +1,9 @@
-{% extends 'base.html' %}
-{% load static %}
-
-{% block title %}Invoice {{ invoice.invoice_number }}{% endblock %}
-
+{% extends 'base.html' %} 
+{% load static %} 
+{% block title %}Invoice {{invoice.invoice_number }}{% endblock %} 
 {% block head %}
-  <link rel="stylesheet" href="{% static 'css/invoice-detail.css' %}" />
-{% endblock %} 
-
-{% block content %}
+<link rel="stylesheet" href="{% static 'css/invoice-detail.css' %}" />
+{% endblock %} {% block content %}
 <div class="topbar">
   <h1>Invoice {{ invoice.invoice_number }}</h1>
   <div class="actions">
@@ -72,8 +68,12 @@
             <td>${{ item.unit_price }}</td>
             <td>${{ item.total_price }}</td>
             <td>
-              <a href="{% url 'item-update' item.id %}" class="btn orange small">Edit</a>
-              <a href="{% url 'item-delete' item.id %}" class="btn red small">Delete</a>
+              <a href="{% url 'item-update' item.id %}" class="btn orange small"
+                >Edit</a
+              >
+              <a href="{% url 'item-delete' item.id %}" class="btn red small"
+                >Delete</a
+              >
             </td>
           </tr>
           {% endfor %}

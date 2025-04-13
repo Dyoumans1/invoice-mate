@@ -1,53 +1,59 @@
-{% extends 'base.html' %}
-{% load static %}
-
-{% block title %}{% if object %}Edit Client{% else %}Add Client{% endif %}{% endblock %}
-
+{% extends 'base.html' %} 
+{% load static %} 
+{% block title %}{% if object %}Edit Client{% else %}Add Client{% endif %}{% endblock %} 
 {% block head %}
-  <link rel="stylesheet" href="{% static 'css/forms.css' %}" />
-{% endblock %} 
-
-{% block content %}
+<link rel="stylesheet" href="{% static 'css/forms.css' %}" />
+{% endblock %} {% block content %}
 <div class="form-container">
-    <div class="form-box">
-        <div class="form-header">
-            <h2>{% if object %}Edit Client{% else %}Add Client{% endif %}</h2>
-        </div>
-        <div class="form-body">
-            <form method="post">
-                {% csrf_token %}
-                
-                <div class="input-group">
-                    <label for="{{ form.name.id_for_label }}" class="input-label">Name</label>
-                    {{ form.name }}
-                </div>
-                
-                <div class="input-group">
-                    <label for="{{ form.email.id_for_label }}" class="input-label">Email</label>
-                    {{ form.email }}
-                </div>
-                
-                <div class="input-group">
-                    <label for="{{ form.address.id_for_label }}" class="input-label">Address</label>
-                    {{ form.address }}
-                </div>
-                
-                <div class="input-group">
-                    <label for="{{ form.phone.id_for_label }}" class="input-label">Phone</label>
-                    {{ form.phone }}
-                </div>
-                
-                <div class="input-group">
-                    <label for="{{ form.notes.id_for_label }}" class="input-label">Notes</label>
-                    {{ form.notes }}
-                </div>
-                
-                <div class="button-group">
-                    <button type="submit" class="button-success">Save</button>
-                    <a href="{% url 'client-index' %}" class="button-secondary">Cancel</a>
-                </div>
-            </form>
-        </div>
+  <div class="form-box">
+    <div class="form-header">
+      <h2>{% if object %}Edit Client{% else %}Add Client{% endif %}</h2>
     </div>
+    <div class="form-body">
+      <form method="post">
+        {% csrf_token %}
+
+        <div class="input-group">
+          <label for="{{ form.name.id_for_label }}" class="input-label"
+            >Name</label
+          >
+          {{ form.name }}
+        </div>
+
+        <div class="input-group">
+          <label for="{{ form.email.id_for_label }}" class="input-label"
+            >Email</label
+          >
+          {{ form.email }}
+        </div>
+
+        <div class="input-group">
+          <label for="{{ form.address.id_for_label }}" class="input-label"
+            >Address</label
+          >
+          {{ form.address }}
+        </div>
+
+        <div class="input-group">
+          <label for="{{ form.phone.id_for_label }}" class="input-label"
+            >Phone</label
+          >
+          {{ form.phone }}
+        </div>
+
+        <div class="input-group">
+          <label for="{{ form.notes.id_for_label }}" class="input-label"
+            >Notes</label
+          >
+          {{ form.notes }}
+        </div>
+
+        <div class="button-group">
+          <button type="submit" class="button-success">Save</button>
+          <a href="{% url 'client-index' %}" class="button-secondary">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
 </div>
 {% endblock %}

@@ -1,18 +1,44 @@
 {% extends 'base.html' %} 
 {% load static %}
 
-{% block title %}Sign Up{% endblock %}
+{% block title %}About InvoiceMaid{% endblock %}
 
 {% block head %}
   <link rel="stylesheet" href="{% static 'css/about.css' %}" />
 {% endblock %} 
 
 {% block content %}
+  <div class="about-container">
     <h1 class="page-title">About InvoiceMaid</h1>
-    <hr />
-        <p class="page-content">
-        A Place where you can make and keep track of all your invoices.
-        </p>
-    <h2 class="Bio">About the creator </h2>
-        <p class="bio-info">thats me</P>
+    
+    <div class="section">
+      <p class="description">
+        InvoiceMaid is a simple app where you can make and keep track of all your invoices.
+        Perfect for freelancers and small businesses who need an easy way to manage their billing.
+      </p>
+    </div>
+    
+    <div class="section">
+      <h2 class="section-title">Features</h2>
+      <ul class="feature-list">
+        <li>Create and save client information</li>
+        <li>Generate professional invoices</li>
+        <li>Track payment status</li>
+        <li>Simple and easy to use interface</li>
+      </ul>
+    </div>
+    
+    <div class="section">
+      <h2 class="section-title">About the Creator</h2>
+      <p class="creator-info">
+        From warehouse worker to math teacher to web developer—my unconventional journey has equipped me with unique strengths. I combine analytical thinking from teaching algebra with practical efficiency from logistics work.
+      </p>
+      <p class="creator-info">
+        I create responsive, user-friendly websites through clean code and intuitive design, consistently exceeding client expectations. What drives me is the field's constant evolution—I thrive on mastering new technologies and methodologies.
+      </p>
+      <p class="creator-info">
+        After years of searching, I've found a career that genuinely excites me about the future.
+      </p>
+    </div>
+  </div>
 {% endblock %}
