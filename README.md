@@ -1,6 +1,17 @@
 # InvoiceMaid
 
-A modern, Django-based invoice management system for freelancers and small businesses.
+![InvoiceMaid Logo](screenshots/dashboard.jpg)
+
+## About
+
+InvoiceMaid is a modern, Django-based invoice management system designed specifically for freelancers and small businesses. I built this application to simplify the invoicing process after struggling with overly complex accounting software that offered far more features than I needed as a freelancer.
+
+This application helps users manage clients, create professional invoices, track payments, and maintain financial records without the steep learning curve of enterprise-level solutions.
+
+## Getting Started
+
+- **Live Demo**: [InvoiceMaid App](https://invoicemaid-2681961b5215.herokuapp.com/)
+- **Project Planning**: [Trello Board](https://trello.com/b/YN5pnvzv/invoice)
 
 ## Features
 
@@ -11,14 +22,6 @@ A modern, Django-based invoice management system for freelancers and small busin
 * Payment status tracking
 * User authentication and authorization
 * Responsive design for mobile and desktop
-
-## Screenshots
-
-![Invoice Dashboard](screenshots/dashboard.png)
-![Invoice Creator](screenshots/creator.png)
-![Client Management](screenshots/clients.png)
-
-
 
 ## Usage
 
@@ -37,12 +40,24 @@ A modern, Django-based invoice management system for freelancers and small busin
 2. View all clients or add a new client
 3. Edit client details as needed
 
-## Technology Stack
+## Technologies Used
 
-* **Backend**: Django 4.2+
-* **Frontend**: HTML, CSS, JavaScript
-* **Database**: SQLite (default), compatible with PostgreSQL for production
-* **Design**: Custom CSS with responsive design
+* **Backend**: Python 3.9, Django 4.2
+* **Frontend**: HTML5, CSS3, JavaScript
+* **Database**: SQLite (development), PostgreSQL (production)
+* **Deployment**: Heroku
+* **Authentication**: Django Authentication System
+* **Version Control**: Git, GitHub
+
+## Next Steps
+
+Future enhancements planned for InvoiceMaid include:
+
+1. Email integration to send invoices directly to clients
+2. Dashboard analytics to visualize income trends
+3. Recurring invoice automation
+4. Integration with payment processors (Stripe, PayPal)
+5. Multi-currency support for international clients
 
 ## Contributing
 
@@ -52,8 +67,4 @@ A modern, Django-based invoice management system for freelancers and small busin
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-
-## Acknowledgments
-
-* Django framework
-* Your valuable feedback and contributions
+## Attributions
