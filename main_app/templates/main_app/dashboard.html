@@ -8,7 +8,34 @@
 {% endblock %}
 
 {% block content %}
-<h1>Dashboard</h1>
+<div class="user-welcome">
+    {% if user.first_name or user.last_name %}
+        <h1>Dashboard {% if user.first_name %}| {{ user.first_name }} {{ user.last_name }}{% endif %}</h1>
+    {% else %}
+        <h1>Dashboard | {{ user.username }}</h1>
+    {% endif %}
+</div>
+
+<div class="dashboard-stats">
+    <div class="stat-card">
+        <h3>Unpaid Invoices</h3>
+        <p class="stat-amount unpaid">${{ unpaid_total }}</p>
+    </div>
+    
+    <div class="stat-card">
+        <h3>Paid This Month</h3>
+        <p class="stat-amount paid">${{ paid_this_month }}</p>
+    </div>
+    
+    <div class="stat-card">
+        <h3>Active Clients</h3>
+        <p class="stat-amount">{{ active_clients_count }}</p>
+    </div>
+</div>
+
+<div class="action-buttons">
+    <a href="{% url 'invoice-create' %}" class="create-button">+ Create New Invoice</a>
+</div>
 
 <div class="dashboard-container">
     <div class="half-column">
