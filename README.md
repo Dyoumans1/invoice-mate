@@ -1,6 +1,6 @@
 # InvoiceMaid
 
-![InvoiceMaid Logo](screenshots/dashboard.jpg)
+![InvoiceMaid](main_app/static/images/dashboard.jpg)
 
 ## About
 
@@ -68,3 +68,5 @@ Future enhancements planned for InvoiceMaid include:
 5. Open a Pull Request
 
 ## Attributions
+* Invoice to pdf instructions from [Weasyprint](https://pypi.org/project/weasyprint/)
+* Stylesheets inspired by [W3Schools](https://www.w3schools.com/)
