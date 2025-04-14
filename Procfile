@@ -1,1 +1,1 @@
-web: gunicorn invoicemaid.wsgi
+web: gunicorn invoicemate.wsgi
