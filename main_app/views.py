@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -10,6 +11,11 @@ from .models import Client, Invoice, Item
 from .forms import CustomUserCreationForm
 from .forms import ItemForm
 from django.forms import inlineformset_factory
+from django.template.loader import render_to_string
+from weasyprint import HTML, CSS
+from django.conf import settings
+import tempfile
+import os
 
 class Home(LoginView):
     template_name = 'home.html'
@@ -167,6 +173,39 @@ class InvoiceUpdate(UpdateView):
             self.object.save()
 
         return response
+    
+
+# followed instructions to add weasyprint
+def generate_pdf_invoice(request, invoice_id):
+    invoice = Invoice.objects.get(id=invoice_id, user=request.user)
+
+    context = {
+        'invoice': invoice,
+        'request': request,
+    }
+    
+    html_string = render_to_string('invoices/pdf_invoice.html', context)
+    
+    from django.contrib.staticfiles import finders
+    css_path = finders.find('css/pdf.css')
+    
+    with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as output:
+        html = HTML(string=html_string, base_url=request.build_absolute_uri('/'))
+        css = CSS(filename=css_path)
+        
+        pdf_file = html.write_pdf(stylesheets=[css])
+        
+        output.write(pdf_file)
+    
+    with open(output.name, 'rb') as f:
+        pdf_content = f.read()
+   
+    os.unlink(output.name)
+    
+    response = HttpResponse(pdf_content, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="invoice_{invoice.invoice_number}.pdf"'
+    
+    return response
 
 class InvoiceDelete(DeleteView):
     model = Invoice

@@ -7,7 +7,7 @@
 <div class="topbar">
   <h1>Invoice {{ invoice.invoice_number }}</h1>
   <div class="actions">
-    <a href="#" class="btn blue">Download</a>
+    <a href="{% url 'invoice-pdf' invoice.id %}" class="btn blue">Download</a>
     <a href="{% url 'invoice-update' invoice.id %}" class="btn orange">Edit</a>
     <a href="{% url 'invoice-delete' invoice.id %}" class="btn red">Delete</a>
   </div>
@@ -45,7 +45,6 @@
 <div class="box">
   <div class="box-head between">
     <h2>Items</h2>
-    <a href="{% url 'item-create' invoice.id %}" class="btn dark">Add Item</a>
   </div>
   <div class="box-body">
     {% if invoice.items.all %}
