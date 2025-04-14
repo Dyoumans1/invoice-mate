@@ -52,7 +52,7 @@ def client_detail(request, client_id):
     client = Client.objects.get(id=client_id, user=request.user)
     return render(request, 'clients/detail.html', {'client': client})
 
-class ClientCreate(CreateView):
+class ClientCreate(LoginRequiredMixin, CreateView):
     model = Client
     fields = ['name', 'email', 'address', 'phone', 'notes']
     template_name = 'clients/client_form.html'
@@ -61,17 +61,17 @@ class ClientCreate(CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
-class ClientUpdate(UpdateView):
+class ClientUpdate(LoginRequiredMixin, UpdateView):
     model = Client
     fields = ['name', 'email', 'address', 'phone', 'notes']
     template_name = 'clients/client_form.html'
 
-class ClientDelete(DeleteView):
+class ClientDelete(LoginRequiredMixin, DeleteView):
     model = Client
     success_url = '/clients/'
     template_name = 'clients/client_confirm_delete.html'
 
-class ClientList(ListView):
+class ClientList(LoginRequiredMixin, ListView):
     model = Client
 
     def get_queryset(self):
@@ -91,7 +91,7 @@ def invoice_detail(request, invoice_id):
     item_form = ItemForm()
     return render(request, 'invoices/detail.html', {'invoice': invoice, 'item_form': item_form})
 
-class InvoiceCreate(CreateView):
+class InvoiceCreate(LoginRequiredMixin, CreateView):
     model = Invoice
     fields = ['client', 'invoice_number', 'issue_date', 'due_date', 'notes', 'tax_rate']
     template_name = 'invoices/invoice_form.html'
@@ -129,7 +129,7 @@ class InvoiceCreate(CreateView):
         
         return response
 
-class InvoiceUpdate(UpdateView):
+class InvoiceUpdate(LoginRequiredMixin, UpdateView):
     model = Invoice
     fields = ['client', 'invoice_number', 'issue_date', 'due_date', 'status', 'notes', 'tax_rate']
     template_name = 'invoices/invoice_form.html'
@@ -207,12 +207,12 @@ def generate_pdf_invoice(request, invoice_id):
     
     return response
 
-class InvoiceDelete(DeleteView):
+class InvoiceDelete(LoginRequiredMixin, DeleteView):
     model = Invoice
     success_url = '/invoices/'
     template_name = 'invoices/invoice_confirm_delete.html'
 
-class ItemCreate(CreateView):
+class ItemCreate(LoginRequiredMixin, CreateView):
     model = Item
     form_class = ItemForm
     
@@ -234,7 +234,7 @@ class ItemCreate(CreateView):
     def get_success_url(self):
         return f'/invoices/{self.kwargs.get("invoice_id")}/'
 
-class ItemUpdate(UpdateView):
+class ItemUpdate(LoginRequiredMixin, UpdateView):
     model = Item
     fields = ['description', 'quantity', 'unit_price']
     
@@ -250,7 +250,7 @@ class ItemUpdate(UpdateView):
         
         return super().form_valid(form)
 
-class ItemDelete(DeleteView):
+class ItemDelete(LoginRequiredMixin, DeleteView):
     model = Item
     
     def get_success_url(self):
