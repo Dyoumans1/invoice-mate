@@ -70,8 +70,10 @@
                 <td>
                   {{ item_form.id }}
                   <div class="input-group">
-                    {{ item_form.description }} {{ item_form.description.errors
-                    }}
+                    {{ item_form.description }}
+                    {% if item_form.description.errors %}
+                      {{ item_form.description.errors }}
+                    {% endif %}
                   </div>
                 </td>
                 <td>
