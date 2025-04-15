@@ -9,8 +9,8 @@
 
 {% block content %}
 <div class="user-welcome">
-    {% if user.first_name or user.last_name %}
-        <h1>Dashboard {% if user.first_name %}| {{ user.first_name }} {{ user.last_name }}{% endif %}</h1>
+    {% if user.company %}
+        <h1>Dashboard | {{ user.company }}</h1>
     {% else %}
         <h1>Dashboard | {{ user.username }}</h1>
     {% endif %}
