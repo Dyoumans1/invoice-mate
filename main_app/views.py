@@ -1,8 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from django.contrib.auth.forms import UserCreationForm
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.views.generic import ListView, DetailView
+from django.views.generic import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import login
@@ -13,7 +12,6 @@ from .forms import ItemForm
 from django.forms import inlineformset_factory
 from django.template.loader import render_to_string
 from weasyprint import HTML, CSS
-from django.conf import settings
 import tempfile
 import os
 
