@@ -17,6 +17,7 @@ import os
 from django.db import models
 from django.utils import timezone
 from datetime import timedelta
+from django.urls import reverse
 
 class Home(LoginView):
     template_name = 'home.html'
@@ -123,6 +124,11 @@ class InvoiceCreate(LoginRequiredMixin, CreateView):
     model = Invoice
     fields = ['client', 'invoice_number', 'issue_date', 'due_date', 'notes', 'tax_rate']
     template_name = 'invoices/invoice_form.html'
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['client'].queryset = Client.objects.filter(user=self.request.user)
+        return form
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -161,6 +167,11 @@ class InvoiceUpdate(LoginRequiredMixin, UpdateView):
     model = Invoice
     fields = ['client', 'invoice_number', 'issue_date', 'due_date', 'status', 'notes', 'tax_rate']
     template_name = 'invoices/invoice_form.html'
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['client'].queryset = Client.objects.filter(user=self.request.user)
+        return form
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -264,9 +275,14 @@ class ItemCreate(LoginRequiredMixin, CreateView):
 class ItemUpdate(LoginRequiredMixin, UpdateView):
     model = Item
     fields = ['description', 'quantity', 'unit_price']
+    template_name = 'items/item_form.html'
+    
+    def get_queryset(self):
+        return Item.objects.filter(user=self.request.user)
     
     def form_valid(self, form):
         original_total = self.object.total_price
+        
         form.instance.total_price = form.instance.quantity * form.instance.unit_price
         
         invoice = self.object.invoice
@@ -276,17 +292,30 @@ class ItemUpdate(LoginRequiredMixin, UpdateView):
         invoice.save()
         
         return super().form_valid(form)
+    
+    def get_success_url(self):
+        return reverse('invoice-detail', kwargs={'invoice_id': self.object.invoice.id})
 
 class ItemDelete(LoginRequiredMixin, DeleteView):
     model = Item
+    template_name = 'items/item_confirm_delete.html' 
     
-    def get_success_url(self):
-        invoice_id = self.object.invoice.id
-        
+    def get_queryset(self):
+        return Item.objects.filter(user=self.request.user)
+    
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
         invoice = self.object.invoice
+        invoice_id = invoice.id
+        
         invoice.subtotal -= self.object.total_price
         invoice.tax_amount = invoice.subtotal * (invoice.tax_rate / 100)
         invoice.total_amount = invoice.subtotal + invoice.tax_amount
+        
+        response = super().delete(request, *args, **kwargs)
         invoice.save()
         
-        return f'/invoices/{invoice_id}/'
+        return response
+    
+    def get_success_url(self):
+        return reverse('invoice-detail', kwargs={'invoice_id': self.invoice_id})

@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ object.description }}{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/forms.css' %}" />
+{% endblock %} 
+
+{% block content %}
+<div class="form-container">
+  <div class="form-box">
+    <div class="form-header">
+      <h2>Edit Item</h2>
+    </div>
+    <div class="form-body">
+      <form method="post">
+        {% csrf_token %}
+        <div class="input-group">
+          <label for="{{ form.description.id_for_label }}" class="input-label">Description</label>
+          {{ form.description }}
+        </div>
+        <div class="input-group">
+          <label for="{{ form.quantity.id_for_label }}" class="input-label">Quantity</label>
+          {{ form.quantity }}
+        </div>
+        <div class="input-group">
+          <label for="{{ form.unit_price.id_for_label }}" class="input-label">Unit Price</label>
+          {{ form.unit_price }}
+        </div>
+        <div class="button-group">
+          <button type="submit" class="button-success">Save</button>
+          <a href="{% url 'invoice-detail' object.invoice.id %}" class="button-secondary">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

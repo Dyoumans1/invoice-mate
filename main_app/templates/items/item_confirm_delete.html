@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Delete {{ object.description }}{% endblock %}
+
+{% block content %}
+<div class="form-container">
+  <div class="form-box">
+    <div class="form-header">
+      <h2>Delete Item</h2>
+    </div>
+    <div class="form-body">
+      <p>Are you sure you want to delete "{{ object.description }}"?</p>
+      <form method="post">
+        {% csrf_token %}
+        <div class="button-group">
+          <button type="submit" class="button-danger">Delete</button>
+          <a href="{% url 'invoice-detail' object.invoice.id %}" class="button-secondary">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
