@@ -14,6 +14,9 @@ from django.template.loader import render_to_string
 from weasyprint import HTML, CSS
 import tempfile
 import os
+from django.db import models
+from django.utils import timezone
+from datetime import timedelta
 
 class Home(LoginView):
     template_name = 'home.html'
@@ -39,7 +42,36 @@ def about(request):
 def dashboard(request):
     invoices = Invoice.objects.filter(user=request.user).order_by('-created_at')[:5]
     clients = Client.objects.filter(user=request.user).order_by('-id')[:5]
-    return render(request, 'main_app/dashboard.html', {'invoices': invoices,'clients': clients })
+    
+    unpaid_total = Invoice.objects.filter(
+        user=request.user,
+        status__in=['pending', 'overdue']  
+    ).aggregate(total=models.Sum('total_amount'))['total'] or 0
+    
+    today = timezone.now()
+    month_start = today.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    paid_this_month = Invoice.objects.filter(
+        user=request.user,
+        status='paid',
+        created_at__gte=month_start
+    ).aggregate(total=models.Sum('total_amount'))['total'] or 0
+   
+    three_months_ago = today - timezone.timedelta(days=90)
+    active_clients_count = Client.objects.filter(
+        user=request.user,
+        invoices__created_at__gte=three_months_ago
+    ).distinct().count()
+    
+    context = {
+        'invoices': invoices,
+        'clients': clients,
+        'unpaid_total': unpaid_total,
+        'paid_this_month': paid_this_month,
+        'active_clients_count': active_clients_count,
+        'user': request.user,
+    }
+    
+    return render(request, 'main_app/dashboard.html', context)
 
 
 def client_index(request):
@@ -75,8 +107,6 @@ class ClientList(LoginRequiredMixin, ListView):
     def get_queryset(self):
         return Client.objects.filter(user=self.request.user)
     
-
-# had help with formset.is_valid and calculations
 
 @login_required
 def invoice_index(request):
@@ -173,7 +203,6 @@ class InvoiceUpdate(LoginRequiredMixin, UpdateView):
         return response
     
 
-# followed instructions to add weasyprint
 def generate_pdf_invoice(request, invoice_id):
     invoice = Invoice.objects.get(id=invoice_id, user=request.user)
 
