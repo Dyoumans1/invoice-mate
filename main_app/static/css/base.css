@@ -210,3 +210,107 @@ button[type='submit'],
   margin: 1.5rem 0;
   border-radius: 0 8px 8px 0;
 }
+
+
+@media screen and (max-width: 768px) {
+  header {
+    padding: 1rem;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  nav ul {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .flex-between {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .table-responsive {
+    overflow-x: auto;
+    max-width: 100%;
+  }
+  
+  .input-row {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .button-group {
+    flex-direction: column;
+  }
+  
+  .client-grid,
+  .client-info-grid,
+  .grid,
+  .dashboard-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .half-column {
+    flex: 1 1 100%;
+  }
+  
+  .topbar,
+  .actions,
+  .card-footer {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: stretch;
+  }
+  
+  .card-footer a {
+    text-align: center;
+    margin: 0.25rem 0;
+  }
+  
+  .dashboard-stats {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .app-title {
+    font-size: 1.2rem;
+  }
+  
+  .header-logo-container img {
+    height: 30px;
+  }
+  
+  .btn, 
+  button[type='submit'],
+  .button-primary, 
+  .button-secondary,
+  .button-danger,
+  .button-warning,
+  .button-info {
+    width: 100%;
+    text-align: center;
+  }
+  
+  .login,
+  .form-container,
+  .form-box {
+    padding: 1rem;
+  }
+  
+  .centered-content h1 {
+    font-size: 2rem;
+  }
+  
+  .lead {
+    font-size: 1.1rem;
+  }
+  
+  .table th,
+  .table td {
+    padding: 0.6rem 0.75rem;
+    font-size: 0.9rem;
+  }
+}
